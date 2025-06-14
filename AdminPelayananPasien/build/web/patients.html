@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manajemen Pasien Rumah Sakit</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <header class="header">
+        <div class="nav-container">
+            <div class="logo">Sistem Pasien</div>
+            <nav class="nav-menu">
+                <a onclick="showPatientList()" class="active">Daftar Pasien</a>
+                <a onclick="showAddForm()">Tambah Pasien</a>
+                <a onclick="showStats()">Statistik</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="main-container">
+        <!-- Daftar Pasien -->
+        <section id="patientListSection" class="admin-section section active">
+            <h2 class="section-title">Daftar Pasien</h2>
+            <div class="search-bar">
+                <input type="text" id="searchInput" placeholder="Cari pasien..." onkeyup="searchPatients()">
+            </div>
+            <div class="table-container">
+                <table class="patient-table">
+                    <thead>
+                        <tr>
+                            <th>No. RM</th>
+                            <th>Nama</th>
+                            <th>Umur</th>
+                            <th>Tipe</th>
+                            <th>No. BPJS</th>
+                            <th>Telepon</th>
+                            <th>Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody id="patientTableBody"></tbody>
+                </table>
+            </div>
+            <div id="pagination" class="pagination"></div>
+        </section>
+
+        <!-- Form Tambah/Edit Pasien -->
+        <section id="patientForm" class="form-container">
+            <h2 id="formTitle" class="form-title">Tambah Pasien Baru</h2>
+            <form id="patientDataForm">
+                <input type="hidden" id="patientId">
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="patientName">Nama</label>
+                        <input type="text" id="patientName" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="patientAge">Umur</label>
+                        <input type="number" id="patientAge" required>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="patientAddress">Alamat</label>
+                        <input type="text" id="patientAddress" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="patientPhone">Telepon</label>
+                        <input type="text" id="patientPhone" required>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="patientType">Tipe</label>
+                        <select id="patientType" onchange="toggleBPJSFields()" required>
+                            <option value="">Pilih</option>
+                            <option value="Umum">Umum</option>
+                            <option value="BPJS">BPJS</option>
+                        </select>
+                    </div>
+                    <div class="form-group" id="bpjsNumberGroup" style="display: none">
+                        <label for="bpjsNumber">No. BPJS</label>
+                        <input type="text" id="bpjsNumber">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group" id="bpjsClassGroup" style="display: none">
+                        <label for="bpjsClass">Kelas BPJS</label>
+                        <select id="bpjsClass">
+                            <option value="">Pilih</option>
+                            <option value="1">Kelas 1</option>
+                            <option value="2">Kelas 2</option>
+                            <option value="3">Kelas 3</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="patientComplaint">Keluhan</label>
+                        <textarea id="patientComplaint" required></textarea>
+                    </div>
+                </div>
+
+                <div class="form-buttons">
+                    <button type="submit" class="btn btn-primary">Simpan</button>
+                    <button type="button" class="btn btn-secondary" onclick="showPatientList()">Batal</button>
+                </div>
+            </form>
+        </section>
+
+        <!-- Statistik Pasien -->
+        <section id="statsSection" class="admin-section section">
+            <h2 class="section-title">Statistik Pasien</h2>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon">👥</div>
+                    <div class="stat-content">
+                        <h3>Total Pasien</h3>
+                        <p class="stat-number" id="totalPatients">0</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">🧍‍♂️</div>
+                    <div class="stat-content">
+                        <h3>Pasien Umum</h3>
+                        <p class="stat-number" id="generalPatients">0</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">🆔</div>
+                    <div class="stat-content">
+                        <h3>Pasien BPJS</h3>
+                        <p class="stat-number" id="bpjsPatients">0</p>
+                    </div>
+                </div>
+            </div>
+            <div class="chart-container">
+                <h3>Distribusi Usia</h3>
+                <canvas id="ageChart"></canvas>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <p>&copy; 2025 Manajemen Pasien Rumah Sakit. All rights reserved.</p>
+    </footer>
+
+    <script src="js/main.js"></script>
+</body>
+</html>

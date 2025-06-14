@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Pelayanan Pasien - Sistem Informasi Rumah Sakit</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="icon" type="image/x-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏥</text></svg>">
+</head>
+<body>
+    <header class="header">
+        <div class="nav-container">
+            <div class="logo">Admin Pelayanan Pasien</div>
+            <nav>
+                <ul class="nav-menu">
+                    <li><a href="#" class="active" onclick="showPatientList()">Daftar Pasien</a></li>
+                    <li><a href="#" onclick="showAddForm()">Tambah Pasien</a></li>
+                    <li><a href="#" onclick="showStats()">Statistik</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main class="main-container">
+        <!-- Patient List Section -->
+        <div id="patientListSection" class="admin-section">
+            <h2 class="section-title">📋 Daftar Pasien</h2>
+            
+            <div class="search-bar">
+                <input type="text" id="searchInput" placeholder="Cari pasien..." onkeyup="handleSearchKeyup(event)">
+                <button onclick="searchPatients()">🔍 Cari</button>
+            </div>
+            
+            <button class="btn btn-add" onclick="showAddForm()">➕ Tambah Pasien Baru</button>
+            
+            <div class="table-container">
+                <table class="patient-table">
+                    <thead>
+                        <tr>
+                            <th>No. RM</th>
+                            <th>Nama Pasien</th>
+                            <th>Usia</th>
+                            <th>Tipe</th>
+                            <th>No. BPJS</th>
+                            <th>Telepon</th>
+                            <th>Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody id="patientTableBody">
+                        <!-- Patient data will be loaded here -->
+                    </tbody>
+                </table>
+            </div>
+            
+            <div class="pagination" id="pagination">
+                <!-- Pagination buttons will be added here -->
+            </div>
+        </div>
+
+        <!-- Add/Edit Patient Form -->
+        <div id="patientForm" class="form-container">
+            <h2 class="form-title" id="formTitle">Tambah Pasien Baru</h2>
+            <form id="patientDataForm">
+                <input type="hidden" id="patientId">
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="patientName">Nama Lengkap:</label>
+                        <input type="text" id="patientName" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="patientAge">Usia:</label>
+                        <input type="number" id="patientAge" min="0" max="120" required>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="patientAddress">Alamat:</label>
+                    <textarea id="patientAddress" rows="3" required></textarea>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="patientPhone">No. Telepon:</label>
+                        <input type="tel" id="patientPhone" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="patientType">Tipe Pasien:</label>
+                        <select id="patientType" onchange="toggleBPJSFields()" required>
+                            <option value="">Pilih Tipe</option>
+                            <option value="Umum">Umum</option>
+                            <option value="BPJS">BPJS</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="form-row" id="bpjsFields" style="display: none;">
+                    <div class="form-group">
+                        <label for="bpjsNumber">No. BPJS:</label>
+                        <input type="text" id="bpjsNumber" pattern="[0-9]{13}" title="Nomor BPJS harus 13 digit" maxlength="13">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="bpjsClass">Kelas Perawatan:</label>
+                        <select id="bpjsClass">
+                            <option value="1">Kelas 1</option>
+                            <option value="2">Kelas 2</option>
+                            <option value="3">Kelas 3</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="patientComplaint">Keluhan:</label>
+                    <textarea id="patientComplaint" rows="3" required></textarea>
+                </div>
+                
+                <div class="form-buttons">
+                    <button type="button" class="btn btn-secondary" onclick="showPatientList()">❌ Batal</button>
+                    <button type="submit" class="btn btn-primary">💾 Simpan</button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Statistics Section -->
+        <div id="statsSection" class="admin-section" style="display: none;">
+            <h2 class="section-title">📊 Statistik Pasien</h2>
+            
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon">👥</div>
+                    <div class="stat-content">
+                        <h3>Total Pasien</h3>
+                        <p id="totalPatients" class="stat-number">0</p>
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon">💰</div>
+                    <div class="stat-content">
+                        <h3>Pasien Umum</h3>
+                        <p id="generalPatients" class="stat-number">0</p>
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon">🏥</div>
+                    <div class="stat-content">
+                        <h3>Pasien BPJS</h3>
+                        <p id="bpjsPatients" class="stat-number">0</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="chart-container">
+                <h3>Distribusi Usia Pasien</h3>
+                <canvas id="ageChart"></canvas>
+            </div>
+            
+            <div class="form-buttons">
+                <button type="button" class="btn btn-primary" onclick="showPatientList()">🔙 Kembali ke Daftar</button>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <p>&copy; 2025 Sistem Admin Pelayanan Pasien. Untuk penggunaan internal rumah sakit.</p>
+    </footer>
+
+    <!-- External Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    
+    <!-- Main JavaScript -->
+    <script src="js/main.js"></script>
+</body>
+</html>
